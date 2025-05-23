@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import s from "./SearchBar.module.css";
 import toast, { Toaster } from "react-hot-toast";
 
-function SearchBar({ onSearch }) {
-  const [input, setInput] = useState("");
+interface SearchBarProps {
+  onSearch: (query: string) => void;
+}
 
-  const handleSubmit = (e) => {
+function SearchBar({ onSearch }: SearchBarProps) {
+  const [input, setInput] = useState<string>("");
+
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (input.trim().length >= 2) {
       onSearch(input.trim());
@@ -13,6 +17,10 @@ function SearchBar({ onSearch }) {
     } else {
       toast.error("Please enter at least 2 characters");
     }
+  };
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
   };
 
   return (
@@ -26,7 +34,7 @@ function SearchBar({ onSearch }) {
           autoFocus
           placeholder="Search images and photos"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleChange}
         />
         <button className={s.button} type="submit">
           Search

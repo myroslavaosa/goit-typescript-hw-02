@@ -1,4 +1,8 @@
-function LoadMoreBtn({ onClick }) {
+interface LoadMoreBtnProps {
+  onClick: () => void;
+}
+
+function LoadMoreBtn({ onClick }: LoadMoreBtnProps) {
   return (
     <button onClick={onClick}>
       Load More

@@ -1,9 +1,25 @@
-import Modal from 'react-modal';
-import s from "./ImageModal.module.css"
+import Modal from "react-modal";
+import s from "./ImageModal.module.css";
 
-Modal.setAppElement('#root'); // Important for accessibility!
+Modal.setAppElement("#root");
 
-function ImageModal({ isOpen, onRequestClose, imageUrl, alt, downloads, views }) {
+interface ImageModalProps {
+  isOpen: boolean;
+  onRequestClose: () => void;
+  imageUrl: string;
+  alt: string;
+  downloads: number;
+  views: number;
+}
+
+function ImageModal({
+  isOpen,
+  onRequestClose,
+  imageUrl,
+  alt,
+  downloads,
+  views,
+}: ImageModalProps) {
   return (
     <Modal
       isOpen={isOpen}

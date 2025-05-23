@@ -1,22 +1,22 @@
-import './App.css';
 import { useEffect, useState } from "react";
-import { fetchImages } from "./services/api";
-import SearchBar from "./components/SearchBar/SearchBar";
-import ImageGallery from "./components/ImageGallery/ImageGallery";
-import Loader from "./components/Loader/Loader";
-import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
-import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
-import ImageModal from "./components/ImageModal/ImageModal";
+import { fetchImages } from "../../services/api";
+import SearchBar from "../SearchBar/SearchBar";
+import ImageGallery from "../ImageGallery/ImageGallery";
+import Loader from "../Loader/Loader";
+import LoadMoreBtn from "../LoadMoreBtn/LoadMoreBtn";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import ImageModal from "../ImageModal/ImageModal";
+import { Image, FetchImagesResponse } from "./App.types";
 
 function App() {
-  const [images, setImages] = useState([]);
-  const [query, setQuery] = useState("");
-  const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [totalPages, setTotalPages] = useState(1);
+  const [query, setQuery] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [images, setImages] = useState<Image[]>([]);
+  const [selectedImage, setSelectedImage] = useState<Image | null>(null);
 
   useEffect(() => {
     if (!query) return;
@@ -25,7 +25,7 @@ function App() {
       setLoading(true);
       setError(false);
       try {
-        const data = await fetchImages(query, page);
+        const data: FetchImagesResponse = await fetchImages(query, page);
         setImages(prev => page === 1 ? data.results : [...prev, ...data.results]);
         setTotalPages(data.total_pages);
       } catch (err) {
@@ -39,17 +39,15 @@ function App() {
     loadImages();
   }, [query, page]);
 
-  const handleSearch = (newQuery) => {
+  const handleSearch = (newQuery: string) => {
     setQuery(newQuery);
     setPage(1);
     setImages([]);
   };
 
-  const handleLoadMore = () => {
-    setPage(prev => prev + 1);
-  };
+  const handleLoadMore = () => setPage(prev => prev + 1);
 
-  const openModal = (img) => {
+  const openModal = (img: Image) => {
     setSelectedImage(img);
     setIsModalOpen(true);
   };
@@ -64,7 +62,7 @@ function App() {
       <SearchBar onSearch={handleSearch} />
       {error && <ErrorMessage />}
       <ImageGallery images={images} onImageClick={openModal} />
-      {loading && <Loader />}
+      {loading && <Loader loading={loading} />}
       {!loading && images.length > 0 && page < totalPages && (
         <LoadMoreBtn onClick={handleLoadMore} />
       )}
@@ -73,7 +71,7 @@ function App() {
           isOpen={isModalOpen}
           onRequestClose={closeModal}
           imageUrl={selectedImage.urls.regular}
-          alt={selectedImage.alt_description}
+          alt={selectedImage.alt_description ?? "Image"}
           downloads={selectedImage.downloads}
           views={selectedImage.views}
         />

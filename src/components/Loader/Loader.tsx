@@ -1,6 +1,10 @@
 import { ClipLoader } from "react-spinners";
 
-function Loader({ loading }) {
+interface LoaderProps {
+  loading: boolean;
+}
+
+function Loader({ loading }: LoaderProps) {
   return (
     <div className="sweet-loading">
       <ClipLoader
